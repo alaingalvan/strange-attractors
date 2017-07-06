@@ -1,3 +1,5 @@
+![Strange Attractor Cover](https://alain.xyz/libraries/coronal/assets/cover.jpg)
+
 # Strange Attractors
 
 [![Download][download-img]][download-url]
