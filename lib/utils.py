@@ -1,8 +1,19 @@
+from math import cos, sin, pi
+
 def __gen_circle__(point=[0, 0, 0], resolution=4, radius=0.1, normal=[1, 0, 0]):
     """
     Generate a circle around a point acording to a given normal.
     """
-    return NotImplemented
+    verts = []
+
+    for i in range(0, resolution):
+        angle = i / resolution
+        xx = cos(angle * 2 * pi)
+        yy = sin(angle * 2 * pi)
+        cur_vert = [xx * radius, yy * radius, 0]
+        verts.extend([xx * radius, yy * radius, 0])
+
+    return verts
 
 
 def spline_mesh(points=[], resolution=4, radius=0.1):
