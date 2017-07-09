@@ -14,7 +14,7 @@ Each attractor function returns an array of vertex points in the format `[x1, y1
 ```py
 import lorenz, spline_mesh from strange_attractors
 
-(vertices, triangles, normals) = spline_mesh(lorenz(), 4, 0.1)
+(triangles, vertices, normals) = spline_mesh(lorenz(), 4, 0.1)
   ```
 
 [license-img]: http://img.shields.io/:license-unlicense-blue.svg?style=flat-square

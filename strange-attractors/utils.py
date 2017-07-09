@@ -1,15 +1,60 @@
 from math import cos, sin, pi, floor, sqrt
 from .glm.normalize import normalize
+from .glm.dot import dot
+from .glm.cross import cross
+from .glm.len import sqdist
+
+
+def __qmul__(p, q):
+    """
+    Quaternion multiplication.
+    """
+    q_s = [p[3] * q[0], p[3] * q[1], p[3] * q[2]]
+    p_s = [q[3] * p[0], q[3] * p[1], q[3] * p[2]]
+    c = cross([p[0], p[1], p[2]], [q[0], q[1], q[2]])
+
+    return [
+        q_s[0] + p_s[0] + c[0],
+        q_s[1] + p_s[1] + c[1],
+        q_s[2] + p_s[2] + c[2],
+        p[3] * q[3] - dot(p, q)
+    ]
+
 
 def __rotate__(point, vec_from, vec_to):
     """
     Rotates a point from 1 vector to another.
     """
-    # Create rotation matrix
-    # m = Mat4()
-    # Multiply w/ point
-    # return m.mul(point)
-    return NotImplemented
+    dt = dot(vec_from, vec_to)
+    if dt > 0.999 and dt < -.999:
+        # Make quaternion
+        c = cross(normalize(vec_from), normalize(vec_to))
+        q = [
+            c[0],
+            c[1],
+            c[2],
+            sqrt(sqdist(vec_from) * sqdist(vec_to)) + dot(vec_from, vec_to)
+        ]
+
+        # Get inverse/conj of q
+        q_conj = [-q[0], -q[1], -q[2], q[0]]
+
+        # Convert point to quaternion
+        q_point = []
+        q_point.extend([point])
+        q_point.append(0)
+
+        # Premultiply by q
+        q_point = __qmul__(q_conj, q_point)
+
+        # Postmultiply by inverse of q
+        q_point = __qmul__(q_point, q)
+
+        # Extract point
+        q_point.pop()
+        return q_point
+
+    return point
 
 
 def __gen_circle__(point=[0, 0, 0], resolution=4, radius=0.1, normal=[1, 0, 0]):
@@ -55,6 +100,7 @@ def spline_mesh(points=[], resolution=4, radius=0.1):
     radius: float
     The radius of the spline circle
     """
+
     vertices = []
     triangles = []
     normals = []
@@ -99,4 +145,4 @@ def spline_mesh(points=[], resolution=4, radius=0.1):
                     cur_row + c, prev_row + c + 1, cur_row + c + 1
                 ])
 
-    return (vertices, triangles, normals)
+    return (triangles, vertices, normals)
