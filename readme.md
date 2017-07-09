@@ -12,7 +12,7 @@ Algorithms to generate strange attractors. Use these algorithms to create Vertex
 Each attractor function returns an array of vertex points in the format `[x1, y1, z1, x2, y2, z2, ...]`, from there you can use the included `spline_mesh` function to convert that data to a Vertex Buffer and Index Buffer:
 
 ```py
-import lorenz, spline_mesh from strange_attractors
+from strange_attractors import lorenz, spline_mesh
 
 (triangles, vertices, normals) = spline_mesh(lorenz(), 4, 0.1)
   ```
