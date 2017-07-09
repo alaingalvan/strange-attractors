@@ -23,7 +23,11 @@ from strange_attractors import burgers, spline_mesh
 
 #### Burgers
 
-`burgers(num_points=10000, start=[0.5, 0.5, 0.5], factor=250, radius=0.1, a=0.7, b=0.78)`
+```py
+from strange_attractors import burgers
+
+burgers(num_points=10000, start=[0.5, 0.5, 0.5], factor=250, radius=0.1, a=0.7, b=0.78)
+```
 
 | Arguments | Type | Description |
 |-----------|------|-------------|
@@ -38,15 +42,14 @@ from strange_attractors import burgers, spline_mesh
 
 A round loopy shape, which looks a lot like a burger (hence the name).
 
-```py
-def burgers(num_points=10000, start=[0.5, 0.5, 0.5], factor=250, radius=0.1, a=0.7, b=0.78):
-```
-
 ### Utilities
 
 #### Spline Mesh
+```py
+from strange_attractors import spline_mesh
 
-`spline_mesh(points=[], resolution=4, radius=0.1)`
+spline_mesh(points=[], resolution=4, radius=0.1)
+```
 
 | Arguments | Type | Description |
 |-----------|------|-------------|
