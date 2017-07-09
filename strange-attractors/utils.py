@@ -105,25 +105,25 @@ def spline_mesh(points=[], resolution=4, radius=0.1):
     triangles = []
     normals = []
     num_points = floor(len(points) / 3)
-    for i in num_points:
+    for i in range(0, num_points):
         cur_point = [
-            points[num_points * i],
-            points[num_points * i + 1],
-            points[num_points * i + 2]
+            points[3 * i],
+            points[3 * i + 1],
+            points[3 * i + 2]
         ]
         normal = []
 
         if (i < num_points - 1):
             normal = [
-                cur_point[0] - points[num_points * (i + 1)],
-                cur_point[1] - points[num_points * (i + 1) + 1],
-                cur_point[2] - points[num_points * (i + 1) + 2]
+                cur_point[0] - points[3 * (i + 1)],
+                cur_point[1] - points[3 * (i + 1) + 1],
+                cur_point[2] - points[3 * (i + 1) + 2]
             ]
         else:
             normal = [
-                cur_point[0] - points[num_points * (i - 1)],
-                cur_point[0] - points[num_points * (i - 1) + 1],
-                cur_point[0] - points[num_points * (i - 1) + 2]
+                cur_point[0] - points[3 * (i - 1)],
+                cur_point[0] - points[3 * (i - 1) + 1],
+                cur_point[0] - points[3 * (i - 1) + 2]
             ]
 
         # ➡️ normalize normal vector
@@ -136,13 +136,14 @@ def spline_mesh(points=[], resolution=4, radius=0.1):
         normals.extend(circle_norms)
 
         if (i > 1):
-            for c in resolution:
+            for c in range(0, resolution):
                 # Middle Rings
                 prev_row = resolution * (i - 1)
                 cur_row = resolution * i
-                triangles.extend([
-                    prev_row + c, prev_row + c + 1, cur_row + c,
-                    cur_row + c, prev_row + c + 1, cur_row + c + 1
-                ])
+                if c < resolution - 1:
+                    triangles.extend([
+                        prev_row + c, prev_row + c + 1, cur_row + c,
+                        cur_row + c, prev_row + c + 1, cur_row + c + 1
+                    ])
 
     return (triangles, vertices, normals)

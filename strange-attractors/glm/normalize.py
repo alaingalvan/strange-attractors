@@ -9,7 +9,7 @@ def normalize(vec):
     Normalizes a n dimensional vector
     """
     d = 0
-    for i in len(vec):
+    for i in range(0, len(vec)):
         d += vec[i] * vec[i]
 
     if d < __EPSILON__:
@@ -17,7 +17,7 @@ def normalize(vec):
     else:
         d = sqrt(d)
 
-    for j in len(vec):
+    for j in range(0, len(vec)):
         vec[j] /= d
 
     return vec
