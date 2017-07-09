@@ -71,7 +71,7 @@ def __gen_circle__(point=[0, 0, 0], resolution=4, radius=0.1, normal=[1, 0, 0]):
         angle = i / resolution
         xx = cos(angle * 2 * pi)
         yy = sin(angle * 2 * pi)
-        cur_vert = [xx * radius, yy * radius, 0]
+        cur_vert = [xx * radius + point[0], yy * radius + point[1], point[2]]
         cur_norm = [xx, yy, 0]
 
         # Multiply by transform matrix based on normal
