@@ -25,33 +25,41 @@ def __rotate__(point, vec_from, vec_to):
     """
     Rotates a point from 1 vector to another.
     """
-    dt = dot(vec_from, vec_to)
-    if not (dt > 0.999 or dt < -.999):
+    n_from = normalize(vec_from)
+    n_to = normalize(vec_to)
+    dt = dot(n_from, n_to)
+
+    if dt < 0.999 and dt > -.999:
         # Make quaternion
-        c = cross(normalize(vec_from), normalize(vec_to))
+        c = cross(n_from, n_to)
         q = [
             c[0],
             c[1],
             c[2],
-            sqrt(sqdist(vec_from) * sqdist(vec_to)) + dot(vec_from, vec_to)
+            dt
         ]
 
+        # Normalize q
+        q_len = sqdist(q)
+        for i in range(0, len(q)):
+            q[i] /= q_len
+
         # Get inverse/conj of q
-        q_conj = [-q[0], -q[1], -q[2], q[0]]
+        q_conj = [-q[0], -q[1], -q[2], q[3]]
 
         # Convert point to quaternion
         q_point = [point[0], point[1], point[2], 0]
 
         # Premultiply by q
-        q_point = __qmul__(q_conj, q_point)
+        q_point = __qmul__(q, q_point)
 
         # Postmultiply by inverse of q
-        q_point = __qmul__(q_point, q)
+        q_point = __qmul__(q_point, q_conj)
 
         # Extract point
-        q_point.pop()
-        return q_point
-
+        return [q_point[0], q_point[1], q_point[2]]
+    elif dt < -.999:
+        return [-point[0], -point[1], -point[2]]
     return point
 
 
@@ -74,7 +82,7 @@ def __gen_circle__(point=[0, 0, 0], resolution=4, radius=0.1, normal=[1, 0, 0]):
 
         # Multiply by transform matrix based on normal
         cur_vert = __rotate__(cur_vert, [0, 0, 1], normal)
-        cur_norm = __rotate__(cur_norm, [0, 0, 1], normal)
+        #cur_norm = __rotate__(cur_norm, [0, 0, 1], normal)
 
         # Add translation
         cur_vert[0] += point[0]
@@ -179,8 +187,13 @@ def spline_mesh(points=[], resolution=4, radius=0.1):
                 cur_row = resolution * i
                 if c < resolution - 1:
                     triangles.extend([
-                        prev_row + c, prev_row + c + 1, cur_row + c,
-                        cur_row + c, prev_row + c + 1, cur_row + c + 1
+                        prev_row + c + 1, prev_row + c, cur_row + c,
+                        prev_row + c + 1, cur_row + c, cur_row + c + 1
+                    ])
+                else:
+                    triangles.extend([
+                        prev_row, prev_row + c, cur_row,
+                        cur_row, prev_row + c, cur_row + c
                     ])
 
     return (triangles, vertices, normals)
