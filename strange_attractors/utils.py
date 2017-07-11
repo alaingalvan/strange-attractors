@@ -9,15 +9,18 @@ def __qmul__(p, q):
     """
     Quaternion multiplication.
     """
+    # p.scalar * q.vector
     q_s = [p[3] * q[0], p[3] * q[1], p[3] * q[2]]
+    # q.scalar * p.vector
     p_s = [q[3] * p[0], q[3] * p[1], q[3] * p[2]]
+    # cross(p.vector, q.vector)
     c = cross([p[0], p[1], p[2]], [q[0], q[1], q[2]])
 
     return [
         q_s[0] + p_s[0] + c[0],
         q_s[1] + p_s[1] + c[1],
         q_s[2] + p_s[2] + c[2],
-        p[3] * q[3] - dot(p, q)
+        p[3] * q[3] - dot([p[0], p[1], p[2]], [q[0], q[1], q[2]])
     ]
 
 
@@ -25,42 +28,44 @@ def __rotate__(point, vec_from, vec_to):
     """
     Rotates a point from 1 vector to another.
     """
+    # Normalized vectors
     n_from = normalize(vec_from)
     n_to = normalize(vec_to)
     dt = dot(n_from, n_to)
+    c = cross(n_from, n_to)
 
-    if dt < 0.999 and dt > -.999:
-        # Make quaternion
-        c = cross(n_from, n_to)
+    # Convert point to quaternion
+    q_point = [point[0], point[1], point[2], 0]
+
+    # Rotation Quaternion
+    q = [0, 0, 0, 1]
+
+    if dt < 0.9999 and dt > -.9999:
         q = [
             c[0],
             c[1],
             c[2],
-            dt
+            dt + 1
         ]
 
         # Normalize q
-        q_len = sqdist(q)
+        q_len = sqrt(sqdist(q))
         for i in range(0, len(q)):
             q[i] /= q_len
+    else:
+        return point
 
-        # Get inverse/conj of q
-        q_conj = [-q[0], -q[1], -q[2], q[3]]
+    # Get inverse/conj of q
+    q_conj = [-q[0], -q[1], -q[2], q[3]]
 
-        # Convert point to quaternion
-        q_point = [point[0], point[1], point[2], 0]
+    # Premultiply by q
+    q_point = __qmul__(q, q_point)
 
-        # Premultiply by q
-        q_point = __qmul__(q, q_point)
+    # Postmultiply by inverse of q
+    q_point = __qmul__(q_point, q_conj)
 
-        # Postmultiply by inverse of q
-        q_point = __qmul__(q_point, q_conj)
-
-        # Extract point
-        return [q_point[0], q_point[1], q_point[2]]
-    elif dt < -.999:
-        return [-point[0], -point[1], -point[2]]
-    return point
+    # Extract point
+    return [q_point[0], q_point[1], q_point[2]]
 
 
 def __gen_circle__(point=[0, 0, 0], resolution=4, radius=0.1, normal=[1, 0, 0]):
@@ -82,7 +87,7 @@ def __gen_circle__(point=[0, 0, 0], resolution=4, radius=0.1, normal=[1, 0, 0]):
 
         # Multiply by transform matrix based on normal
         cur_vert = __rotate__(cur_vert, [0, 0, 1], normal)
-        #cur_norm = __rotate__(cur_norm, [0, 0, 1], normal)
+        cur_norm = __rotate__(cur_norm, [0, 0, 1], normal)
 
         # Add translation
         cur_vert[0] += point[0]
@@ -146,9 +151,6 @@ def spline_mesh(points=[], resolution=4, radius=0.1):
     triangles = []
     normals = []
     num_points = floor(len(points) / 3)
-
-    # Spline mesh
-    # points = __spline__(points)
 
     for i in range(0, num_points):
         cur_point = [
