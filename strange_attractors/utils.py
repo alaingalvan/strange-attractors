@@ -26,7 +26,7 @@ def __rotate__(point, vec_from, vec_to):
     Rotates a point from 1 vector to another.
     """
     dt = dot(vec_from, vec_to)
-    if not (dt > 0.999 and dt < -.999):
+    if not (dt > 0.999 or dt < -.999):
         # Make quaternion
         c = cross(normalize(vec_from), normalize(vec_to))
         q = [
@@ -40,9 +40,7 @@ def __rotate__(point, vec_from, vec_to):
         q_conj = [-q[0], -q[1], -q[2], q[0]]
 
         # Convert point to quaternion
-        q_point = []
-        q_point.extend([point])
-        q_point.append(0)
+        q_point = [point[0], point[1], point[2], 0]
 
         # Premultiply by q
         q_point = __qmul__(q_conj, q_point)
@@ -71,12 +69,17 @@ def __gen_circle__(point=[0, 0, 0], resolution=4, radius=0.1, normal=[1, 0, 0]):
         angle = i / resolution
         xx = cos(angle * 2 * pi)
         yy = sin(angle * 2 * pi)
-        cur_vert = [xx * radius + point[0], yy * radius + point[1], point[2]]
+        cur_vert = [xx * radius, yy * radius, 0]
         cur_norm = [xx, yy, 0]
 
         # Multiply by transform matrix based on normal
-        #cur_vert = __rotate__(cur_vert, [1, 0, 0], normal)
-        #cur_norm = __rotate__(cur_norm, [1, 0, 0], normal)
+        cur_vert = __rotate__(cur_vert, [0, 0, 1], normal)
+        cur_norm = __rotate__(cur_norm, [0, 0, 1], normal)
+
+        # Add translation
+        cur_vert[0] += point[0]
+        cur_vert[1] += point[1]
+        cur_vert[2] += point[2]
 
         # And add to VBO
         verts.extend(cur_vert)
@@ -137,7 +140,7 @@ def spline_mesh(points=[], resolution=4, radius=0.1):
     num_points = floor(len(points) / 3)
 
     # Spline mesh
-    points = __spline__(points)
+    # points = __spline__(points)
 
     for i in range(0, num_points):
         cur_point = [
