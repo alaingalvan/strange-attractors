@@ -26,7 +26,7 @@ def __rotate__(point, vec_from, vec_to):
     Rotates a point from 1 vector to another.
     """
     dt = dot(vec_from, vec_to)
-    if !(dt > 0.999 and dt < -.999):
+    if not (dt > 0.999 and dt < -.999):
         # Make quaternion
         c = cross(normalize(vec_from), normalize(vec_to))
         q = [
@@ -84,7 +84,8 @@ def __gen_circle__(point=[0, 0, 0], resolution=4, radius=0.1, normal=[1, 0, 0]):
 
     return (verts, normals)
 
-def __spline__(points=[], resolution = 12):
+
+def __spline__(points=[], resolution=12):
     """
     Converts a vertex point list to a high resolution spline.
     """
@@ -97,13 +98,13 @@ def __spline__(points=[], resolution = 12):
                 points[3 * p],
                 points[3 * p + 1],
                 points[3 * p + 2]
-                ]
+            ]
 
             next_point = [
                 points[3 * (p + 1)],
-                points[3 *  (p + 1) + 1],
-                points[3 *  (p + 1) + 2]
-                ]
+                points[3 * (p + 1) + 1],
+                points[3 * (p + 1) + 2]
+            ]
 
             s_points.extend(cur_point)
             for i in range(0, resolution):
