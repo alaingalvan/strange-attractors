@@ -1,4 +1,4 @@
-def burgers(num_points=10000, start=[0.5, 0.5, 0.5], factor=250, radius=0.1, a=0.7, b=0.78):
+def burgers(num_points=2000, start=[0.5, 0.5, 0.5], factor=250, radius=0.1, a=0.7, b=0.78):
     """
     Generates Burger strange attractor.
     """

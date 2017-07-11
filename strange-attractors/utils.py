@@ -26,7 +26,7 @@ def __rotate__(point, vec_from, vec_to):
     Rotates a point from 1 vector to another.
     """
     dt = dot(vec_from, vec_to)
-    if dt > 0.999 and dt < -.999:
+    if !(dt > 0.999 and dt < -.999):
         # Make quaternion
         c = cross(normalize(vec_from), normalize(vec_to))
         q = [
@@ -75,14 +75,42 @@ def __gen_circle__(point=[0, 0, 0], resolution=4, radius=0.1, normal=[1, 0, 0]):
         cur_norm = [xx, yy, 0]
 
         # Multiply by transform matrix based on normal
-        cur_vert = __rotate__(cur_vert, [1, 0, 0], normal)
-        cur_norm = __rotate__(cur_norm, [1, 0, 0], normal)
+        #cur_vert = __rotate__(cur_vert, [1, 0, 0], normal)
+        #cur_norm = __rotate__(cur_norm, [1, 0, 0], normal)
 
         # And add to VBO
         verts.extend(cur_vert)
         normals.extend(cur_norm)
 
     return (verts, normals)
+
+def __spline__(points=[], resolution = 12):
+    """
+    Converts a vertex point list to a high resolution spline.
+    """
+    s_points = []
+    for p in range(0, floor(len(points) / (3 * 2))):
+        # @TODO Interpoliate prev and next
+
+        if 3 * (p + 1) < len(points):
+            cur_point = [
+                points[3 * p],
+                points[3 * p + 1],
+                points[3 * p + 2]
+                ]
+
+            next_point = [
+                points[3 * (p + 1)],
+                points[3 *  (p + 1) + 1],
+                points[3 *  (p + 1) + 2]
+                ]
+
+            s_points.extend(cur_point)
+            for i in range(0, resolution):
+                ratio = i / resolution
+                # @TODO - Figure out interpoliation between cur and next for spline
+
+    return s_points
 
 
 def spline_mesh(points=[], resolution=4, radius=0.1):
@@ -101,10 +129,15 @@ def spline_mesh(points=[], resolution=4, radius=0.1):
     The radius of the spline circle
     """
 
+    # Initial vars
     vertices = []
     triangles = []
     normals = []
     num_points = floor(len(points) / 3)
+
+    # Spline mesh
+    points = __spline__(points)
+
     for i in range(0, num_points):
         cur_point = [
             points[3 * i],
