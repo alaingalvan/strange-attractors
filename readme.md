@@ -1,4 +1,4 @@
-![Strange Attractor Cover](https://alain.xyz/libraries/coronal/assets/cover.jpg)
+![Strange Attractor Cover](images/cover.png)
 
 # Strange Attractors
 
@@ -21,22 +21,47 @@ from strange_attractors import burgers, spline_mesh
 
 ### Attractors
 
-#### Burgers
+#### Lorenz
+
+![Lorenz](images/lorenz.png)
 
 ```py
-from strange_attractors import burgers
+from strange_attractors import lorenz
 
-burgers(num_points=10000, start=[0.5, 0.5, 0.5], factor=250, radius=0.1, a=0.7, b=0.78)
+lorenz(num_points=15000, start=[0.10, 0.10, 0.10], factor=20, delta=0.008, a=0.1, b=4.0, c=14.0, d=0.08):
 ```
 
 | Arguments | Type | Description |
 |-----------|------|-------------|
 | `num_points`| `long` | Number of points |
 | `start`| `float[3]` | Starting vector |
-| `factor`| `long` | Rotation factor |
-| `radius`| `float` | Radius of burger |
-| `a`| `float` | Alpha constant |
-| `b`| `float` | Beta constant |
+| `factor`| `long` | Scaling factor |
+| `delta`| `float` | Change over time |
+| `a`| `float` | A constant |
+| `b`| `float` | B constant |
+| `c`| `float` | C constant |
+| `d`| `float` | D constant |
+
+**Returns:** `float[3*num_points]`
+
+A twisting shape that looks almost like a tornado.
+
+#### Burgers
+
+```py
+from strange_attractors import burgers
+
+burgers(num_points=10000, start=[0.5, 0.5, 0.5], factor=250, delta=0.1, a=0.7, b=0.78)
+```
+
+| Arguments | Type | Description |
+|-----------|------|-------------|
+| `num_points`| `long` | Number of points |
+| `start`| `float[3]` | Starting vector |
+| `factor`| `long` | Scaling factor |
+| `delta`| `float` | Change over time |
+| `a`| `float` | A constant |
+| `b`| `float` | B constant |
 
 **Returns:** `float[3*num_points]`
 
