@@ -1,4 +1,4 @@
-![Strange Attractor Cover](images/cover.png)
+![Strange Attractor Cover](images/cover.jpg)
 
 # Strange Attractors
 
@@ -23,7 +23,7 @@ from strange_attractors import burgers, spline_mesh
 
 #### Lorenz
 
-![Lorenz](images/lorenz.png)
+![Lorenz](images/lorenz.jpg)
 
 ```py
 from strange_attractors import lorenz
@@ -48,6 +48,8 @@ A twisting shape that looks almost like a tornado.
 
 #### Burgers
 
+![Burgers](images/burgers.jpg)
+
 ```py
 from strange_attractors import burgers
 
@@ -70,6 +72,7 @@ A round loopy shape, which looks a lot like a burger (hence the name).
 ### Utilities
 
 #### Spline Mesh
+
 ```py
 from strange_attractors import spline_mesh
 
